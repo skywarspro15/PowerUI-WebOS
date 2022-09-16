@@ -1,0 +1,250 @@
+@font-face {
+  font-family: SegoeUIVariableSemibold;
+  src: url("fonts/Segoe-UI-Variable-Static-Display-Semibold.ttf");
+}
+
+@font-face {
+  font-family: SegoeUIVariable;
+  src: url("fonts/Segoe-UI-Variable-Static-Display.ttf");
+}
+
+
+html, body {
+  overflow: hidden;
+  min-width: 100vw;
+  min-height: 100vh;
+  background-size: cover;
+  background-image: url("https://source.unsplash.com/1600x900/?mountains");
+  font-family: SegoeUIVariable;
+  user-select: none;
+}
+
+#taskbar {
+  background-color: rgba(18,18,18, 0.7);
+  backdrop-filter: blur(100px);
+  overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transition: all 200ms; 
+  animation: slideUp 1s ease 0s 1 normal forwards;
+}
+
+#taskbar a {
+  float: left;
+  display: block;
+  color: #FFFF;
+  text-align: center;
+  padding: 10px 10px;
+  text-decoration: none;
+  font-size: 17px;
+  animation: slideUp 1s ease 0s 1 normal forwards;
+}
+
+#startMenu {
+  background-color: rgba(18,18,18, 0.7);
+  backdrop-filter: blur(100px);
+  overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  transition: all 200ms; 
+  border-radius: 0px 5px 0px 0px;
+}
+
+#startMenu ul#appList {
+  list-style: none; 
+  float: left;
+  display: block;
+  color: #FFFF;
+  text-align: left;
+  padding: 10px 10px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+#startMenu ul#appList li a {
+  list-style: none; 
+  color: #FFFF;
+  text-align: left;
+  padding: 10px 10px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+#startMenu ul#tileList li {
+  list-style: none;
+  float: left;
+  margin:20px;
+  width: 20%;
+  height: 20%;
+  text-decoration: none;
+  color: #fff;
+}
+
+#startMenu ul#tileList li a {
+  list-style: none;
+  float: left;
+  margin:20px;
+  width: 20%;
+  height: 20%;
+  text-decoration: none;
+  color: #fff;
+}
+
+#startMenu ul#tileList {
+  height: 300px;
+  float: right;
+  color: #FFFF;
+}
+
+#taskbar a:hover {
+  background-color: rgba(221, 221, 221, 0.2);   
+}
+
+
+
+/* The window */
+.container {
+  border: 3px solid rgba(18,18,18, 0.4);
+  backdrop-filter: blur(100px);
+  border-radius: 5px;
+  position: absolute;
+  width: 30%;
+}
+
+/* Container for columns and the top "toolbar" */
+.row {
+  padding: 3px;
+  background-color: rgba(18,18,18, 0.4);
+  backdrop-filter: blur(100px);
+  border-radius: 3px;
+}
+
+/* Create three unequal columns that floats next to each other */
+.column {
+  float: left;
+}
+
+.left {
+  width: 50%;
+}
+
+.right {
+  width: 10%;
+}
+
+.middle {
+  width: 75%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Three dots */
+.dot {
+  margin-top: 4px;
+  height: 12px;
+  width: 12px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.dot:hover {
+  cursor: pointer;
+}
+
+/* Style the input field */
+.middle p {
+  width: 220px;
+  border-radius: 3px;
+  border: none;
+  margin-top: -1px;
+  height: 25px;
+  color: #fff;
+  padding: 5px;
+}
+
+/* Three bars (hamburger menu) */
+.bar {
+  width: 17px;
+  height: 3px;
+  background-color: #aaa;
+  margin: 3px 0;
+  display: block;
+}
+
+/* Page content */
+.content {
+  padding: 10px;
+  background-color: rgba(18,18,18, 0.7);
+  backdrop-filter: blur(100px);
+  color: rgb(255,255,255);
+}
+
+@keyframes zoomIn {
+	0% {
+		transform: scale(0.5);
+	}
+
+	100% {
+		transform: scale(1);
+	}
+}
+
+@keyframes zoomOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes slideUp {
+	0% {
+		opacity: 0;
+		transform: translateY(250px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes slideDown {
+	0% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	100% {
+		opacity: 0;
+		transform: translateY(250px);
+	}
+}
+
+@keyframes swingIn {
+	0% {
+		opacity: 0;
+		transform: rotateX(-100deg);
+		transform-origin: top;
+	}
+
+	100% {
+		opacity: 1;
+		transform: rotateX(0deg);
+		transform-origin: top;
+	}
+}
