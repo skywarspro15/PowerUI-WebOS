@@ -15,6 +15,31 @@ function openAbout() {
 
 }
 
+function openSettings() {
+  var html;
+  html = "<h1 style='text-align: center;'><strong>Settings</strong></h1>";
+  html = html + "<ul id='nav' style='list-style-type: none;'> ";
+  html = html + "<li> ";
+  html = html + "<a>";
+  html = html + "Account Settings";
+  html = html + "</a> ";
+  html = html + "</li> ";
+  html = html + "<li> ";
+  html = html + "<a>";
+  html = html + "Personalization";
+  html = html + "</a> ";
+  html = html + "</li> ";
+  html = html + "<li> ";
+  html = html + "<a>";
+  html = html + "Updates";
+  html = html + "</a> ";
+  html = html + "</li> ";
+  html = html + "</ul>";
+
+  console.log(html);
+  createWindow("settings", html);
+}
+
 
 
 function restoreWindow(elmnt, maximizeElement) {
@@ -161,21 +186,16 @@ function createWindow(id, content) {
 function dragElement(elmnt, maxButton) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   if (document.getElementById(elmnt.id + "header")) {
-    // if present, the header is where you move the DIV from:
     document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
   } else {
-    // otherwise, move the DIV from anywhere inside the DIV:
     elmnt.onmousedown = dragMouseDown;
   }
 
   function dragMouseDown(e) {
     e = e || window.event;
-    //e.preventDefault();
-    // get the mouse cursor position at startup:
     pos3 = e.clientX;
     pos4 = e.clientY;
     document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
     document.onmousemove = elementDrag;
     elmnt.style.zIndex = ++counter;
     if (localStorage.getItem("startOpened") == "true") {
@@ -186,20 +206,16 @@ function dragElement(elmnt, maxButton) {
   function elementDrag(e) {
     if (localStorage.getItem("isMaximized") != "true") {
       e = e || window.event;
-      //e.preventDefault();
-      // calculate the new cursor position:
       pos1 = pos3 - e.clientX;
       pos2 = pos4 - e.clientY;
       pos3 = e.clientX;
       pos4 = e.clientY;
-      // set the element's new position:
       elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
       elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
     }
   }
 
   function closeDragElement(e) {
-    // stop moving when mouse button is released:
     document.onmouseup = null;
     document.onmousemove = null;
     if (e.clientY < 1) {
@@ -211,9 +227,6 @@ function dragElement(elmnt, maxButton) {
   }
 }
 
-addTaskbarItem("About.png", "javascript: openAbout();");
-addTileItem("About", "javascript: openAbout();");
-addListItem("About", "javascript: openAbout();");
 
 function addTileItem(name, href) {
   var tileList = document.getElementById("tileList");
@@ -321,3 +334,9 @@ function getCookie(cname) {
 
 localStorage.setItem("isMaximized", "false");
 localStorage.setItem("startOpened", "false");
+addTaskbarItem("About.png", "javascript: openAbout();");
+addTaskbarItem("Settings.png", "javascript: openSettings();");
+addTileItem("About", "javascript: openAbout();");
+addListItem("About", "javascript: openAbout();");
+addTileItem("Settings", "javascript: openSettings();");
+addListItem("Settings", "javascript: openSettings();");
