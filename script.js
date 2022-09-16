@@ -40,7 +40,22 @@ function openSettings() {
   createWindow("settings", html);
 }
 
-
+document.addEventListener("contextmenu", function(event) {
+  event.preventDefault();
+  var ctxMenu = document.getElementById("ctxMenu");
+  ctxMenu.style.display = "block";
+  ctxMenu.style.animation = "contextMenu 500ms ease 0s 1 normal forwards";
+  ctxMenu.style.width = "150px";
+  ctxMenu.style.left = (event.pageX - 20) + "px";
+  ctxMenu.style.top = (event.pageY - 20) + "px";
+}, false);
+document.addEventListener("click", function(event) {
+  var ctxMenu = document.getElementById("ctxMenu");
+  ctxMenu.style.display = "";
+  ctxMenu.style.left = "";
+  ctxMenu.style.top = "";
+  ctxMenu.style.animation = "animation: contextMenu 500ms ease 0s 1 normal forwards";
+}, false);
 
 function restoreWindow(elmnt, maximizeElement) {
   var lastX = localStorage.getItem(elmnt.id + "_lastX");
