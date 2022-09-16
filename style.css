@@ -224,7 +224,7 @@ menu[title]:before{
     content:attr(title);
 }
 menu:not([title]):before{
-    content:"\2630    Desktop options";
+    content:"\2630    More options";
 }
 
 @keyframes contextMenu {

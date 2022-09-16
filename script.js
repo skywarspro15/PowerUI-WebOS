@@ -34,28 +34,67 @@ function openSettings() {
   html = html + "Updates";
   html = html + "</a> ";
   html = html + "</li> ";
+  html = html + "<li> ";
+  html = html + "<a>";
+  html = html + "About PowerUI";
+  html = html + "</a> ";
+  html = html + "</li> ";
   html = html + "</ul>";
 
   console.log(html);
   createWindow("settings", html);
 }
 
-document.addEventListener("contextmenu", function(event) {
-  event.preventDefault();
-  var ctxMenu = document.getElementById("ctxMenu");
-  ctxMenu.style.display = "block";
-  ctxMenu.style.animation = "contextMenu 500ms ease 0s 1 normal forwards";
-  ctxMenu.style.width = "150px";
-  ctxMenu.style.left = (event.pageX - 20) + "px";
-  ctxMenu.style.top = (event.pageY - 20) + "px";
-}, false);
-document.addEventListener("click", function(event) {
-  var ctxMenu = document.getElementById("ctxMenu");
-  ctxMenu.style.display = "";
-  ctxMenu.style.left = "";
-  ctxMenu.style.top = "";
-  ctxMenu.style.animation = "animation: contextMenu 500ms ease 0s 1 normal forwards";
-}, false);
+function createContextMenu(name, title, href) {
+  var ctxMenu = document.createElement("menu");
+  var ctxLink = document.createElement("a");
+  ctxMenu.className = "ctxMenu:" + name;
+  ctxMenu.id = "ctxMenu";
+  if (title.trim() != "") {
+    ctxMenu.setAttribute("title", title);
+  }
+
+  document.body.appendChild(ctxMenu);
+
+}
+
+function createSubMenu(ref, name, href) {
+  var ctxMenu = document.getElementsByClassName("ctxMenu:" + ref);
+  var subMenu = document.createElement("menu");
+
+  subMenu.setAttribute("title", name);
+  subMenu.setAttribute("href", href);
+  subMenu.className = "ctxMenu:" + name;
+
+  ctxMenu[0].appendChild(subMenu);
+
+}
+
+function assignContextMenu(elmnt, ref) {
+  elmnt.addEventListener("contextmenu", function(event) {
+    event.preventDefault();
+    var ctxMenu = document.getElementsByClassName("ctxMenu:" + ref);
+    ctxMenu[0].style.display = "block";
+    ctxMenu[0].style.animation = "contextMenu 500ms ease 0s 1 normal forwards";
+    ctxMenu[0].style.width = "150px";
+    ctxMenu[0].style.left = (event.pageX - 20) + "px";
+    ctxMenu[0].style.top = (event.pageY - 20) + "px";
+  }, false);
+  elmnt.addEventListener("click", function(event) {
+    var ctxMenu = document.getElementsByClassName("ctxMenu:" + ref);
+    ctxMenu[0].style.display = "";
+    ctxMenu[0].style.left = "";
+    ctxMenu[0].style.top = "";
+    ctxMenu[0].style.animation = "animation: contextMenu 500ms ease 0s 1 normal forwards";
+  }, false);
+  var ctxMenu = document.getElementsByClassName("ctxMenu:" + ref);
+  ctxMenu[0].addEventListener("click", function(event) {
+    var hovered = document.getElementsByClassName(event.target.className);
+    if (hovered[0].getAttribute('href').trim() != "") {
+      eval(hovered[0].getAttribute('href').replace('javascript:', ''));
+    }
+  }, false);
+}
 
 function restoreWindow(elmnt, maximizeElement) {
   var lastX = localStorage.getItem(elmnt.id + "_lastX");
