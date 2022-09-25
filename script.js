@@ -11,8 +11,7 @@ function openAbout() {
   html = html + '<p style="text-align: center; text-decoration: none; color: aaa;">Tranch Software 2022</p>';
 
   console.log(html);
-  createWindow("about", html);
-
+  createWindow("About", "About.png", html);
 }
 
 function openSettings() {
@@ -42,7 +41,18 @@ function openSettings() {
   html = html + "</ul>";
 
   console.log(html);
-  createWindow("settings", html);
+  createWindow("Settings", "Settings.png", html);
+}
+
+function openBroadcast() {
+  var html;
+
+  html = '<h1>PowerUI Broadcast</h1> ';
+  html = html + '<p>Insert a channel ID or start a stream to get started.</p> ';
+  html = html + '<p>Channel ID</p> ';
+  html = html + '<input style="border-radius: 3px; border: none;" type="text" placeholder="Channel ID">';
+
+  createWindow("Broadcast", html);
 }
 
 function createContextMenu(name, title, href) {
@@ -96,6 +106,10 @@ function assignContextMenu(elmnt, ref) {
   }, false);
 }
 
+function focusApp(elmnt) {
+  elmnt.style.zIndex = ++counter;
+}
+
 function restoreWindow(elmnt, maximizeElement) {
   var lastX = localStorage.getItem(elmnt.id + "_lastX");
   var lastY = localStorage.getItem(elmnt.id + "_lastY");
@@ -132,7 +146,7 @@ function restoreWindow(elmnt, maximizeElement) {
     elmnt.style.transition = "none";
   }, 100);
 
-  localStorage.setItem("isMaximized", "false");
+  localStorage.setItem(elmnt.id + "_isMaximized", "false");
 
 }
 
@@ -141,8 +155,7 @@ function maximizeWindow(elmnt, maximizeElement) {
   localStorage.setItem(elmnt.id + "_lastY", elmnt.style.top);
   localStorage.setItem(elmnt.id + "_lastHeight", elmnt.clientHeight + "px");
   localStorage.setItem(elmnt.id + "_lastWidth", elmnt.clientWidth + "px");
-  localStorage.setItem("isMaximized", "true");
-  localStorage.setItem("currentlyMaximized", elmnt.id);
+  localStorage.setItem(elmnt.id + "_isMaximized", "true");
 
   elmnt.style.transition = "all 100ms ease";
 
@@ -174,27 +187,32 @@ function maximizeWindow(elmnt, maximizeElement) {
 }
 
 
-function closeWindow(elmnt) {
+function closeWindow(elmnt, id) {
+  var openInstances = +localStorage.getItem(id + "_openInstances") || 0;
+  console.log(openInstances);
   elmnt.style.animation = "zoomOut 100ms ease 0s 1 normal forwards";
   setTimeout(function() {
     elmnt.remove();
   }, 100);
-  localStorage.setItem("isMaximized", "false");
+  localStorage.setItem(elmnt.id + "_isMaximized", "false");
+  localStorage.setItem(id + "_openInstances", String(openInstances - 1));
+  removeTaskbarItem(elmnt.id);
   if (localStorage.getItem("startOpened") == "true") {
     var thing = startMenu();
   }
 }
 
-function createWindow(id, content) {
+function createWindow(id, icon, content) {
+  var openInstances = +localStorage.getItem(id + "_openInstances") || 0;
   var windowContainer = document.createElement("div");
   var windowHeader = document.createElement("div");
   var windowControls = document.createElement("div");
 
 
-  windowContainer.id = id;
+  windowContainer.id = id + "_" + (openInstances + 1);
   windowContainer.className = "container";
 
-  windowHeader.id = id + "Header";
+  windowHeader.id = (id + "_" + (openInstances + 1)) + "Header";
   windowHeader.className = "row";
 
   windowControls.className = "column left";
@@ -205,7 +223,7 @@ function createWindow(id, content) {
 
   closeButton.className = "dot";
   closeButton.style.background = "#ED594A";
-  closeButton.addEventListener("click", function() { closeWindow(windowContainer) });
+  closeButton.addEventListener("click", function() { closeWindow(windowContainer, id) });
 
   minimizeButton.className = "dot";
   minimizeButton.style.background = "#FDD800";
@@ -229,6 +247,9 @@ function createWindow(id, content) {
   windowContainer.style.animation = "zoomIn 100ms ease 0s 1 normal forwards";
 
   document.body.appendChild(windowContainer);
+  addTaskbarItem(id + "_" + (openInstances + 1), icon, "javascript: console.log('" + id + "');");
+  localStorage.setItem(id + "_isMaximized", "false");
+  localStorage.setItem(id + "_openInstances", openInstances + 1)
   dragElement(windowContainer, maximizeButton);
 
   if (localStorage.getItem("startOpened") == "true") {
@@ -258,7 +279,7 @@ function dragElement(elmnt, maxButton) {
   }
 
   function elementDrag(e) {
-    if (localStorage.getItem("isMaximized") != "true") {
+    if (localStorage.getItem(elmnt.id + "_isMaximized") != "true") {
       e = e || window.event;
       pos1 = pos3 - e.clientX;
       pos2 = pos4 - e.clientY;
@@ -332,15 +353,24 @@ function startMenu() {
   return "";
 }
 
-function addTaskbarItem(icon, href) {
+function addTaskbarItem(name, icon, href) {
   var taskbar = document.getElementById("taskbar");
   var taskbarItem = document.createElement("a");
   var taskbarIcon = document.createElement("img");
   taskbarIcon.src = icon;
   taskbarIcon.style.width = "17px";
   taskbarItem.href = href;
+  taskbarItem.id = name;
   taskbarItem.appendChild(taskbarIcon);
   taskbar.appendChild(taskbarItem);
+}
+
+function removeTaskbarItem(name) {
+  var taskbarItem = document.getElementById(name);
+  taskbarItem.style.animation = "slideDown 1s ease 0s 1 normal forwards";
+  setTimeout(function() {
+    taskbarItem.remove();
+  }, 1000)
 }
 
 function formatAMPM(date) {
@@ -388,8 +418,7 @@ function getCookie(cname) {
 
 localStorage.setItem("isMaximized", "false");
 localStorage.setItem("startOpened", "false");
-addTaskbarItem("About.png", "javascript: openAbout();");
-addTaskbarItem("Settings.png", "javascript: openSettings();");
+
 addTileItem("About", "javascript: openAbout();");
 addListItem("About", "javascript: openAbout();");
 addTileItem("Settings", "javascript: openSettings();");
