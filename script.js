@@ -71,6 +71,7 @@ function createDialog(name, title, content, option1, option2) {
   dialog.id = name;
   dialog.className = "dialog";
   dialogContent.className = "dialog-content";
+  dialog.style.zIndex = ++counter;
 
   dialog.appendChild(dialogContent);
 
@@ -106,6 +107,7 @@ function createDialog(name, title, content, option1, option2) {
 
   dialogFooter.appendChild(button1);
   dialogFooter.appendChild(button2);
+
 
   document.body.appendChild(dialog);
 
@@ -442,11 +444,50 @@ function formatAMPM(date) {
 
 function getTime() {
   var time = document.getElementById("time");
+  var timeLockScreen = document.getElementById("timeLockScreen");
   time.innerHTML = formatAMPM(new Date);
+  timeLockScreen.innerHTML = formatAMPM(new Date);
 }
 
 getTime();
 setInterval(getTime, 1000);
+
+async function authenticateUser(username, password) {
+  var result = await makeRequest(
+    "GET",
+    "https://CloudWebV2.skywarspro15.repl.co/login.php?username=" +
+    username +
+    "&password=" +
+    password
+  );
+
+  return result;
+}
+
+function makeRequest(method, url) {
+  return new Promise(function(resolve, reject) {
+    let xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.onload = function() {
+      if (this.status >= 200 && this.status < 300) {
+        resolve(xhr.response);
+      } else {
+        reject({
+          status: this.status,
+          statusText: xhr.statusText,
+        });
+      }
+    };
+    xhr.onerror = function() {
+      reject({
+        status: this.status,
+        statusText: xhr.statusText,
+      });
+    };
+    xhr.send();
+  });
+}
+
 
 function setCookie(cname, cvalue) {
   const today = new Date();
@@ -472,6 +513,57 @@ function getCookie(cname) {
   return "";
 }
 
+function lockScreen() {
+  var lockScreen = document.getElementById("lockScreen");
+  var loginPage = document.getElementById("loginPage");
+  var username = document.getElementById("username");
+
+  lockScreen.addEventListener("click", function() {
+    loginPage.style.display = "block";
+    username.innerHTML = getCookie("username");
+  });
+}
+
+function continueLogin() {
+  var username = prompt("Insert your PowerUI account username to continue");
+  if (username.trim() != "") {
+    setCookie("hasUser", "true");
+    setCookie("username", username);
+    removeDialog("NoUser");
+    lockScreen();
+  } else {
+    continueLogin();
+  }
+}
+
+async function logIn() {
+  var username = getCookie("username");
+  var password = document.getElementById("passwordInput").value;
+  var lockScreen = document.getElementById("lockScreen");
+  var loginPage = document.getElementById("loginPage");
+  var loginButton = document.getElementById("loginButton");
+
+  loginButton.innerHTML = "Logging in...";
+
+  var result = await authenticateUser(username, password);
+
+  if (result == "Not a valid user") {
+    setCookie("hasUser", "false");
+    loginButton.innerHTML = "Log in";
+    window.location.reload();
+  } else if (result == "Password's valid!") {
+    sessionStorage.setItem("loggedIn", "true");
+    lockScreen.remove();
+    loginPage.remove();
+    loginButton.innerHTML = "Log in";
+  } else if (result == "Password's not valid") {
+    createDialog("WrongPass", "Wrong password.", "Please try again.", "removeDialog('WrongPass');", "removeDialog('WrongPass');");
+    document.getElementById("passwordInput").value = "";
+    loginButton.innerHTML = "Log in";
+  }
+
+}
+
 localStorage.setItem("isMaximized", "false");
 localStorage.setItem("startOpened", "false");
 
@@ -479,3 +571,16 @@ addTileItem("About", "javascript: openAbout();");
 addListItem("About", "javascript: openAbout();");
 addTileItem("Settings", "javascript: openSettings();");
 addListItem("Settings", "javascript: openSettings();");
+
+if (sessionStorage.getItem("loggedIn") != "true") {
+  if (getCookie("hasUser") == "true") {
+    lockScreen();
+  } else {
+    createDialog("NoUser", "Access PowerUI by signing up for an account", "Get started using PowerUI by signing up for PowerUI Cloud. It's easy! Already an existing user? Click on 'Cancel' to continue to the login page.", "continueLogin();", "window.location.href = 'https://CloudWebV2.skywarspro15.repl.co'");
+  }
+} else {
+  var lockScreen = document.getElementById("lockScreen");
+  var loginPage = document.getElementById("loginPage");
+  lockScreen.remove();
+  loginPage.remove();
+}

@@ -19,6 +19,69 @@ html, body {
   user-select: none;
 }
 
+#loginPage {
+  backdrop-filter: blur(100px);
+  position: fixed; /* Stay in place */
+  z-index: 3; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  animation: fadeIn 200ms;
+}
+
+#lockScreen {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-size: cover;
+  background-image: url("https://source.unsplash.com/1600x900/?mountains");
+}
+
+#timeLockScreen {
+  position: fixed;
+  z-index: 2;
+  font-size: 40px;
+  color: white;
+  font-family: SegoeUIVariableSemibold;
+  left: 0; 
+  bottom: 0;
+  margin: 0;
+  padding: 10px;
+}
+
+
+#screenText {
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: none;
+}
+
+#passwordInput {
+  margin: 0;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width: 80%;
+  background-color: white;
+  padding: 5px;
+  font-family: SegoeUIVariable;
+  border: none;
+  border-radius: 3px;
+}
+
+
 #taskbar {
   background-color: rgba(18,18,18, 0.7);
   backdrop-filter: blur(100px);
@@ -120,7 +183,7 @@ html, body {
 
 .dialog-content {
   backdrop-filter: blur(100px);
-  background-color: rgba(0,0,0, 0.5);
+  background-color: rgba(0,0,0, 0.6);
   margin: 0;
   position: absolute;
   top: 50%;
@@ -170,8 +233,8 @@ html, body {
 }
 
 .no {
-  background-color: white;
-  color: black;
+  background-color: rgb(50,50,50);
+  color: white;
 }
 
 .container {
