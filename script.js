@@ -55,6 +55,62 @@ function openBroadcast() {
   createWindow("Broadcast", html);
 }
 
+function removeDialog(name) {
+  var dialog = document.getElementById(name);
+
+  dialog.style.animation = "fadeOut 200ms";
+  setTimeout(function() {
+    dialog.remove();
+  }, 100);
+}
+
+function createDialog(name, title, content, option1, option2) {
+  var dialog = document.createElement("div");
+  var dialogContent = document.createElement("div");
+
+  dialog.id = name;
+  dialog.className = "dialog";
+  dialogContent.className = "dialog-content";
+
+  dialog.appendChild(dialogContent);
+
+  var dialogTitle = document.createElement("p");
+  var dialogSubtitle = document.createElement("p");
+
+  dialogTitle.className = "dialog-title";
+  dialogSubtitle.className = "dialog-subtitle";
+
+  dialogTitle.innerHTML = title;
+  dialogSubtitle.innerHTML = content;
+
+  dialogContent.appendChild(dialogTitle);
+  dialogContent.appendChild(dialogSubtitle);
+
+  var dialogFooter = document.createElement("div");
+
+  dialogFooter.className = "dialog-footer";
+
+  dialogContent.appendChild(dialogFooter);
+
+  var button1 = document.createElement("button");
+  var button2 = document.createElement("button");
+
+  button1.className = "dialog-button no";
+  button2.className = "dialog-button yes";
+
+  button1.innerHTML = "Cancel";
+  button2.innerHTML = "OK";
+
+  button1.setAttribute("onclick", option1);
+  button2.setAttribute("onclick", option2);
+
+  dialogFooter.appendChild(button1);
+  dialogFooter.appendChild(button2);
+
+  document.body.appendChild(dialog);
+
+}
+
 function createContextMenu(name, title, href) {
   var ctxMenu = document.createElement("menu");
   var ctxLink = document.createElement("a");
