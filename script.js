@@ -16,7 +16,7 @@ function openAbout() {
 
 function openSettings() {
   var html;
-  html = "<h1 style='text-align: center;'><strong>Settings</strong></h1>";
+  html = "<h1 style='text-align: center;'><strong>Hello, " + getCookie("username") + "!</strong></h1>";
   html = html + "<ul id='nav' style='list-style-type: none;'> ";
   html = html + "<li> ";
   html = html + "<a>";
@@ -64,7 +64,7 @@ function removeDialog(name) {
   }, 100);
 }
 
-function createDialog(name, title, content, option1, option2) {
+function createDialog(name, title, content, option1, option2, text1 = "Cancel", text2 = "OK") {
   var dialog = document.createElement("div");
   var dialogContent = document.createElement("div");
 
@@ -99,8 +99,8 @@ function createDialog(name, title, content, option1, option2) {
   button1.className = "dialog-button no";
   button2.className = "dialog-button yes";
 
-  button1.innerHTML = "Cancel";
-  button2.innerHTML = "OK";
+  button1.innerHTML = text1;
+  button2.innerHTML = text2;
 
   button1.setAttribute("onclick", option1);
   button2.setAttribute("onclick", option2);
@@ -436,7 +436,7 @@ function formatAMPM(date) {
   var minutes = date.getMinutes();
   var ampm = hours >= 12 ? 'pm' : 'am';
   hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
+  hours = hours ? hours : 12;
   minutes = minutes < 10 ? '0' + minutes : minutes;
   var strTime = hours + ':' + minutes + ' ' + ampm;
   return strTime;
@@ -553,8 +553,12 @@ async function logIn() {
     window.location.reload();
   } else if (result == "Password's valid!") {
     sessionStorage.setItem("loggedIn", "true");
-    lockScreen.remove();
-    loginPage.remove();
+    lockScreen.style.animation = "fadeOut 200ms";
+    loginPage.style.animation = "fadeOut 200ms";
+    setTimeout(function() {
+      lockScreen.remove();
+      loginPage.remove();
+    }, 200);
     loginButton.innerHTML = "Log in";
   } else if (result == "Password's not valid") {
     createDialog("WrongPass", "Wrong password.", "Please try again.", "removeDialog('WrongPass');", "removeDialog('WrongPass');");
@@ -576,11 +580,18 @@ if (sessionStorage.getItem("loggedIn") != "true") {
   if (getCookie("hasUser") == "true") {
     lockScreen();
   } else {
-    createDialog("NoUser", "Access PowerUI by signing up for an account", "Get started using PowerUI by signing up for PowerUI Cloud. It's easy! Already an existing user? Click on 'Cancel' to continue to the login page.", "continueLogin();", "window.location.href = 'https://CloudWebV2.skywarspro15.repl.co'");
+    createDialog("NoUser", "Access PowerUI by signing up for an account", "Get started using PowerUI by signing up for PowerUI Cloud. It's easy! Already an existing user? Click on 'Log in' to continue to the login page.", "continueLogin();", "window.open('https://CloudWebV2.skywarspro15.repl.co', '', 'width=400, height=500');", "Log in", "Sign up");
+
   }
 } else {
   var lockScreen = document.getElementById("lockScreen");
   var loginPage = document.getElementById("loginPage");
   lockScreen.remove();
   loginPage.remove();
+}
+
+const full = location.protocol + '//' + location.host;
+
+if (full == "https://powerui-webos-dev.skywarspro15.repl.co") {
+  createDialog("BuildWarn", "This is a dev build!", "This build is used to test a certain feature before getting released to a stable build. Things might not work as expected!", "removeDialog('BuildWarn');", "window.open('https://powerui-webos.netlify.app/')", "Proceed anyway", "Go to stable build");
 }
